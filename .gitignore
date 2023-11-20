@@ -14,8 +14,8 @@ tests
 
 #develop
 wandb
-data
-data/
+# data
+# data/
 *.pkl
 *.pkl.json
 *.log.json
