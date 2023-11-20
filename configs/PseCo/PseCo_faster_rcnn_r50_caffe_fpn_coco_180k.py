@@ -36,7 +36,8 @@ model = dict(
     ),
 )
 
-img_norm_cfg = dict(mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
+# img_norm_cfg = dict(mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
+img_norm_cfg = dict(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0], to_rgb=False)
 
 strong_pipeline = [
     dict(
@@ -44,7 +45,7 @@ strong_pipeline = [
         transforms=[
             dict(
                 type="RandResize",
-                img_scale=[(1333, 400), (1333, 1200)],    
+                img_scale=[(1333, 200), (1333, 200)],   
                 multiscale_mode="range",
                 keep_ratio=True,
             ),
@@ -118,7 +119,7 @@ weak_pipeline = [
         transforms=[
         dict(
             type="RandResize",
-            img_scale=[(1333, 400), (1333, 1200)],    
+            img_scale=[(1333, 200), (1333, 200)],    
             multiscale_mode="range",
             keep_ratio=True,
         ),
@@ -163,13 +164,13 @@ data = dict(
     train=dict(
         sup=dict(
             type="CocoDataset",
-            ann_file="../data/annotations/semi_supervised/instances_train2017.${fold}@${percent}.json",
-            img_prefix="../data/train2017/",
+            ann_file="/home/ubuntu/PseCo/data/sup_coco_data.json",
+            img_prefix="/home/ubuntu/PseCo/data/data/",
         ),
         unsup=dict(
             type="CocoDataset",
-            ann_file="../data/annotations/semi_supervised/instances_train2017.${fold}@${percent}-unlabeled.json",
-            img_prefix="../data/train2017/",
+            ann_file="/home/ubuntu/PseCo/data/coco_data.json",
+            img_prefix="/home/ubuntu/PseCo/data/data/",
             pipeline=unsup_pipeline,
         ),
     ),

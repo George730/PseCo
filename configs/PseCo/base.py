@@ -17,7 +17,8 @@ model = dict(
     )
 )
 
-img_norm_cfg = dict(mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
+# img_norm_cfg = dict(mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
+img_norm_cfg = dict(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0], to_rgb=False)
 
 train_pipeline = [
     dict(type="LoadImageFromFile", file_client_args=dict(backend="${backend}")),
@@ -27,7 +28,7 @@ train_pipeline = [
         transforms=[
             dict(
                 type="RandResize",
-                img_scale=[(1333, 400), (1333, 1200)],  
+                img_scale=[(1333, 200), (1333, 200)], 
                 multiscale_mode="range",
                 keep_ratio=True,
             ),
@@ -77,7 +78,7 @@ strong_pipeline = [
         transforms=[
             dict(
                 type="RandResize",
-                img_scale=[(1333, 400), (1333, 1200)],   
+                img_scale=[(1333, 200), (1333, 200)],   
                 multiscale_mode="range",
                 keep_ratio=True,
             ),
@@ -150,7 +151,7 @@ weak_pipeline = [
         transforms=[
             dict(
                 type="RandResize",
-                img_scale=[(1333, 400), (1333, 1200)],
+                img_scale=[(1333, 200), (1333, 200)],
                 multiscale_mode="range",
                 keep_ratio=True,
             ),
@@ -191,7 +192,7 @@ test_pipeline = [
     dict(type="LoadImageFromFile", file_client_args=dict(backend="${backend}")),
     dict(
         type="MultiScaleFlipAug",
-        img_scale=(1333, 800),
+        img_scale=(1333, 200),
         flip=False,
         transforms=[
             dict(type="Resize", keep_ratio=True),
@@ -224,12 +225,12 @@ data = dict(
         ),
     ),
     val=dict(
-        ann_file="../data/annotations/instances_val2017.json",
-        img_prefix="../data/val2017/",
+        ann_file="/home/ubuntu/PseCo/data/sup_coco_data.json",
+        img_prefix="/home/ubuntu/PseCo/data/data/",
         pipeline=test_pipeline),
     test=dict(
-        ann_file="../data/annotations/instances_val2017.json",
-        img_prefix="../data/val2017/",
+        ann_file="/home/ubuntu/PseCo/data/sup_coco_data.json",
+        img_prefix="/home/ubuntu/PseCo/data/data/",
         pipeline=test_pipeline),
     sampler=dict(
         train=dict(

@@ -87,6 +87,8 @@ class CustomDataset(Dataset):
                                               self.proposal_file)
         # load annotations (and proposals)
         self.data_infos = self.load_annotations(self.ann_file)
+        print(self.ann_file)
+        print(self.data_infos)
 
         if self.proposal_file is not None:
             self.proposals = self.load_proposals(self.proposal_file)
@@ -207,9 +209,13 @@ class CustomDataset(Dataset):
             dict: Training data and annotation after pipeline with new keys \
                 introduced by pipeline.
         """
-
+        if isinstance(idx, np.float64):
+            idx = int(idx)
         img_info = self.data_infos[idx]
         ann_info = self.get_ann_info(idx)
+        # print(img_info, ann_info)
+        # print(self.data_infos[162])
+        # print(self.get_ann_info(162))
         results = dict(img_info=img_info, ann_info=ann_info)
         if self.proposals is not None:
             results['proposals'] = self.proposals[idx]

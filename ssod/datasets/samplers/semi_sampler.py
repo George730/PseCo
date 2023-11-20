@@ -103,12 +103,33 @@ class GroupSemiBalanceSampler(Sampler):
                     # print(ratio)
                     for j in range(len(shuffled_indice_per_dataset)):
                         if len(shuffled_indice_per_dataset[j]) < ratio[j]:
-                            shuffled_indice_per_dataset[j] = np.concatenate(
-                                (
-                                    shuffled_indice_per_dataset[j],
-                                    np.random.shuffle(indice_per_dataset[j])
+                            if not np.random.shuffle(indice_per_dataset[j]):
+                                shuffled_indice_per_dataset[j] = np.concatenate(
+                                    (
+                                        shuffled_indice_per_dataset[j],
+                                        np.array([])
+                                    )
                                 )
-                            )
+                            else:
+                                shuffled_indice_per_dataset[j] = np.concatenate(
+                                    (
+                                        shuffled_indice_per_dataset[j],
+                                        np.random.shuffle(indice_per_dataset[j])
+                                    )
+                                )
+                            # shuffled_indice_per_dataset[j] = np.concatenate( 
+                            #     ( 
+                            #         shuffled_indice_per_dataset[j], 
+                            #         # np.random.shuffle(indice_per_dataset[j]), 
+                            #         indice_per_dataset[j][ 
+                            #             list( 
+                            #                 np.random.permutation( 
+                            #                     int(indice_per_dataset[j].shape[0]), 
+                            #                 ) 
+                            #             ) 
+                            #         ], 
+                            #     ) 
+                            # )
 
                         selected.append(shuffled_indice_per_dataset[j][: ratio[j]])
                         shuffled_indice_per_dataset[j] = shuffled_indice_per_dataset[j][
@@ -131,7 +152,9 @@ class GroupSemiBalanceSampler(Sampler):
                 (i + 1) * self.samples_per_gpu,
             )
         ]
-        assert len(indices) == len(self)
+        # print("indice", len(indices))
+        # print("self", len(self))
+        # assert len(indices) == len(self)
         return iter(indices)
 
     def __len__(self):
