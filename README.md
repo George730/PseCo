@@ -12,8 +12,6 @@ bash tools/test.sh
 
 
 
-
-
 # PseCo (ECCV 2022)
 [![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2203.16317)
 ![visitors](https://visitor-badge.glitch.me/badge?page_id=ligang-cs/PseCo)
