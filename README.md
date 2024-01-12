@@ -1,3 +1,19 @@
+# ASML YieldStar Checkpoints
+1. Modified mmdetection package to tailor our 2 class ssod
+2. Add checkpoints folder with models (end with .pth) as well as predicted images
+3. Run model training
+```shell script
+bash tools/dist_train_partially_labeled_90k_iter.sh
+```
+4. Run inference
+```shell script
+bash tools/test.sh
+```
+
+
+
+
+
 # PseCo (ECCV 2022)
 [![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2203.16317)
 ![visitors](https://visitor-badge.glitch.me/badge?page_id=ligang-cs/PseCo)
