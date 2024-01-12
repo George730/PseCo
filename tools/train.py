@@ -169,6 +169,7 @@ def main():
     )
     model.init_weights()
     
+    # print("!!!!!!!!!!!!!!!cfg.data.train:", cfg.data.train)
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)

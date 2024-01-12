@@ -214,8 +214,10 @@ def main():
         model.CLASSES = checkpoint["meta"]["CLASSES"]
     else:
         model.CLASSES = dataset.CLASSES
+    print("Classes", model.CLASSES)
 
     if not distributed:
+        print("Not Dist")
         model = MMDataParallel(model, device_ids=[0])
         outputs = single_gpu_test(
             model, data_loader, args.show, args.show_dir, args.show_score_thr
@@ -227,6 +229,7 @@ def main():
             broadcast_buffers=False,
         )
         outputs = multi_gpu_test(model, data_loader, args.tmpdir, args.gpu_collect)
+    # print("Outputs:", outputs)
 
     rank, _ = get_dist_info()
     if rank == 0:

@@ -31,7 +31,7 @@ conduct() {
   done
 }
 
-data_root=../data
+data_root=/home/ubuntu/PseCo/data/coco
 ROOT=$(dirname "$0")/../..
 
 cd "${ROOT}"

@@ -87,8 +87,8 @@ class CustomDataset(Dataset):
                                               self.proposal_file)
         # load annotations (and proposals)
         self.data_infos = self.load_annotations(self.ann_file)
-        print(self.ann_file)
-        print(self.data_infos)
+        # print(self.ann_file)
+        # print(self.data_infos)
 
         if self.proposal_file is not None:
             self.proposals = self.load_proposals(self.proposal_file)
@@ -113,7 +113,7 @@ class CustomDataset(Dataset):
 
     def load_annotations(self, ann_file):
         """Load annotation from annotation file."""
-        return mmcv.load(ann_file)
+        return mmcv.load(ann_file, file_format='json')
 
     def load_proposals(self, proposal_file):
         """Load proposal from proposal file."""
@@ -214,8 +214,8 @@ class CustomDataset(Dataset):
         img_info = self.data_infos[idx]
         ann_info = self.get_ann_info(idx)
         # print(img_info, ann_info)
-        # print(self.data_infos[162])
-        # print(self.get_ann_info(162))
+        # print(self.data_infos[1])
+        # print(self.get_ann_info(1))
         results = dict(img_info=img_info, ann_info=ann_info)
         if self.proposals is not None:
             results['proposals'] = self.proposals[idx]

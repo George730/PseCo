@@ -14,8 +14,15 @@ tests
 
 #develop
 wandb
-# data
-# data/
+data
+data/
+logs/
+# checkpoints/
+ckpt/
+images
+logs/
+checkpoints/
+
 *.pkl
 *.pkl.json
 *.log.json
@@ -140,8 +147,8 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# data/
-# data
+data/
+data
 .vscode
 .idea
 .DS_Store

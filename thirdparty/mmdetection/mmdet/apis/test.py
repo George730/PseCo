@@ -12,23 +12,38 @@ from mmcv.image import tensor2imgs
 from mmcv.runner import get_dist_info
 
 from mmdet.core import encode_mask_results
+from mmdet.apis import inference_detector
 
 
 def single_gpu_test(model,
                     data_loader,
-                    show=False,
-                    out_dir=None,
+                    show=True,
+                    out_dir="/home/ubuntu/PseCo/ckpt",
                     show_score_thr=0.3):
+
+    # res = inference_detector(model, "/home/ubuntu/PseCo/data/data/S385-315_-38_BR.png")
+    # print(res)
     model.eval()
     results = []
     dataset = data_loader.dataset
     prog_bar = mmcv.ProgressBar(len(dataset))
+
+    # print("Model:", model)
+    # print("Dataset:", dataset)
+
     for i, data in enumerate(data_loader):
+        # print("Origin Data:", data)
         with torch.no_grad():
             result = model(return_loss=False, rescale=True, **data)
 
+        
         batch_size = len(result)
-        if show or out_dir:
+        print("Len of Result:", batch_size)
+        # print("result:", result)
+        # if show or out_dir:
+        if True:
+            print("Data:", data['img'][0].shape)
+            # print("Data mean:",  data['img'][0])
             if batch_size == 1 and isinstance(data['img'][0], torch.Tensor):
                 img_tensor = data['img'][0]
             else:
@@ -38,23 +53,28 @@ def single_gpu_test(model,
             assert len(imgs) == len(img_metas)
 
             for i, (img, img_meta) in enumerate(zip(imgs, img_metas)):
+                print("Yes")
                 h, w, _ = img_meta['img_shape']
                 img_show = img[:h, :w, :]
 
                 ori_h, ori_w = img_meta['ori_shape'][:-1]
                 img_show = mmcv.imresize(img_show, (ori_w, ori_h))
 
-                if out_dir:
-                    out_file = osp.join(out_dir, img_meta['ori_filename'])
-                else:
-                    out_file = None
+                # if out_dir:
+                #     out_file = osp.join(out_dir, img_meta['ori_filename'])
+                # else:
+                #     out_file = None
+                
+                out_file = osp.join("/home/ubuntu/PseCo/ckpt", img_meta['ori_filename'])
+
+                # print(out_file)
 
                 model.module.show_result(
                     img_show,
                     result[i],
-                    show=show,
+                    show=True,
                     out_file=out_file,
-                    score_thr=show_score_thr)
+                    score_thr=0.0)
 
         # encode mask results
         if isinstance(result[0], tuple):

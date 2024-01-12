@@ -49,7 +49,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=80,
+                num_classes=2,
                 bbox_coder=dict(
                     type='DeltaXYWHBBoxCoder',
                     target_means=[0.0, 0.0, 0.0, 0.0],
@@ -124,7 +124,7 @@ model = dict(
     test_cfg=dict(inference_on='teacher'))
 dataset_type = 'CocoDataset'
 data_root = 'data/coco/'
-img_norm_cfg = dict(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0], to_rgb=False)
+img_norm_cfg = dict(mean=[1.0, 1.0, 1.0], std=[1.0, 1.0, 1.0], to_rgb=False)
 train_pipeline = [
     dict(type='LoadImageFromFile', file_client_args=dict(backend='disk')),
     dict(type='LoadAnnotations', with_bbox=True),
@@ -133,7 +133,7 @@ train_pipeline = [
         transforms=[
             dict(
                 type='RandResize',
-                img_scale=[(1333, 200), (1333, 200)],
+                img_scale=[(1333, 480), (1333, 480)],
                 multiscale_mode='range',
                 keep_ratio=True),
             dict(type='RandFlip', flip_ratio=0.5),
@@ -170,7 +170,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile', file_client_args=dict(backend='disk')),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(1333, 200),
+        img_scale=(1333, 480),
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),
@@ -204,7 +204,7 @@ data = dict(
                     transforms=[
                         dict(
                             type='RandResize',
-                            img_scale=[(1333, 200), (1333, 200)],
+                            img_scale=[(1333, 480), (1333, 480)],
                             multiscale_mode='range',
                             keep_ratio=True),
                         dict(type='RandFlip', flip_ratio=0.5),
@@ -237,7 +237,8 @@ data = dict(
                     meta_keys=('filename', 'ori_shape', 'img_shape',
                                'img_norm_cfg', 'pad_shape', 'scale_factor',
                                'tag'))
-            ]),
+            ],
+            classes=('ghost', 'particle')),
         unsup=dict(
             type='CocoDataset',
             ann_file='/home/ubuntu/PseCo/data/coco_data.json',
@@ -255,7 +256,7 @@ data = dict(
                             transforms=[
                                 dict(
                                     type='RandResize',
-                                    img_scale=[(1333, 200), (1333, 200)],
+                                    img_scale=[(1333, 480), (1333, 480)],
                                     multiscale_mode='range',
                                     keep_ratio=True),
                                 dict(type='RandFlip', flip_ratio=0.5),
@@ -307,7 +308,7 @@ data = dict(
                         dict(type='Pad', size_divisor=32),
                         dict(
                             type='Normalize',
-                            mean=[0.0, 0.0, 0.0],
+                            mean=[1.0, 1.0, 1.0],
                             std=[1.0, 1.0, 1.0],
                             to_rgb=False),
                         dict(type='ExtraAttrs', tag='unsup_student'),
@@ -327,7 +328,7 @@ data = dict(
                             transforms=[
                                 dict(
                                     type='RandResize',
-                                    img_scale=[(1333, 200), (1333, 200)],
+                                    img_scale=[(1333, 480), (1333, 480)],
                                     multiscale_mode='range',
                                     keep_ratio=True),
                                 dict(type='RandFlip', flip_ratio=0.5)
@@ -336,7 +337,7 @@ data = dict(
                         dict(type='Pad', size_divisor=32),
                         dict(
                             type='Normalize',
-                            mean=[0.0, 0.0, 0.0],
+                            mean=[1.0, 1.0, 1.0],
                             std=[1.0, 1.0, 1.0],
                             to_rgb=False),
                         dict(type='ExtraAttrs', tag='unsup_teacher'),
@@ -351,7 +352,8 @@ data = dict(
                                        'flip_direction'))
                     ])
             ],
-            filter_empty_gt=False)),
+            filter_empty_gt=False,
+            classes=('ghost', 'particle'))),
     val=dict(
         type='CocoDataset',
         ann_file='/home/ubuntu/PseCo/data/sup_coco_data.json',
@@ -362,7 +364,7 @@ data = dict(
                 file_client_args=dict(backend='disk')),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(1333, 200),
+                img_scale=(1333, 480),
                 flip=False,
                 transforms=[
                     dict(type='Resize', keep_ratio=True),
@@ -387,7 +389,7 @@ data = dict(
                 file_client_args=dict(backend='disk')),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(1333, 200),
+                img_scale=(1333, 480),
                 flip=False,
                 transforms=[
                     dict(type='Resize', keep_ratio=True),
@@ -410,15 +412,15 @@ data = dict(
             epoch_length=7330)))
 evaluation = dict(
     interval=10000, metric='bbox', type='SubModulesDistEvalHook', start=20000)
-optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=None)
 lr_config = dict(
     policy='step',
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[6000])
-runner = dict(type='IterBasedRunner', max_iters=9000)
+    step=[600])
+runner = dict(type='IterBasedRunner', max_iters=1800)
 checkpoint_config = dict(
     interval=5000, by_epoch=False, max_keep_ckpts=10, create_symlink=False)
 log_config = dict(
@@ -441,7 +443,7 @@ strong_pipeline = [
         transforms=[
             dict(
                 type='RandResize',
-                img_scale=[(1333, 200), (1333, 200)],
+                img_scale=[(1333, 480), (1333, 480)],
                 multiscale_mode='range',
                 keep_ratio=True),
             dict(type='RandFlip', flip_ratio=0.5),
@@ -491,7 +493,7 @@ strong_pipeline = [
     dict(type='Pad', size_divisor=32),
     dict(
         type='Normalize',
-        mean=[0.0, 0.0, 0.0],
+        mean=[1.0, 1.0, 1.0],
         std=[1.0, 1.0, 1.0],
         to_rgb=False),
     dict(type='ExtraAttrs', tag='unsup_student'),
@@ -509,7 +511,7 @@ weak_pipeline = [
         transforms=[
             dict(
                 type='RandResize',
-                img_scale=[(1333, 200), (1333, 200)],
+                img_scale=[(1333, 480), (1333, 480)],
                 multiscale_mode='range',
                 keep_ratio=True),
             dict(type='RandFlip', flip_ratio=0.5)
@@ -518,7 +520,7 @@ weak_pipeline = [
     dict(type='Pad', size_divisor=32),
     dict(
         type='Normalize',
-        mean=[0.0, 0.0, 0.0],
+        mean=[1.0, 1.0, 1.0],
         std=[1.0, 1.0, 1.0],
         to_rgb=False),
     dict(type='ExtraAttrs', tag='unsup_teacher'),
@@ -541,7 +543,7 @@ unsup_pipeline = [
                 transforms=[
                     dict(
                         type='RandResize',
-                        img_scale=[(1333, 200), (1333, 200)],
+                        img_scale=[(1333, 480), (1333, 480)],
                         multiscale_mode='range',
                         keep_ratio=True),
                     dict(type='RandFlip', flip_ratio=0.5),
@@ -591,7 +593,7 @@ unsup_pipeline = [
             dict(type='Pad', size_divisor=32),
             dict(
                 type='Normalize',
-                mean=[0.0, 0.0, 0.0],
+                mean=[1.0, 1.0, 1.0],
                 std=[1.0, 1.0, 1.0],
                 to_rgb=False),
             dict(type='ExtraAttrs', tag='unsup_student'),
@@ -609,7 +611,7 @@ unsup_pipeline = [
                 transforms=[
                     dict(
                         type='RandResize',
-                        img_scale=[(1333, 200), (1333, 200)],
+                        img_scale=[(1333, 480), (1333, 480)],
                         multiscale_mode='range',
                         keep_ratio=True),
                     dict(type='RandFlip', flip_ratio=0.5)
@@ -618,7 +620,7 @@ unsup_pipeline = [
             dict(type='Pad', size_divisor=32),
             dict(
                 type='Normalize',
-                mean=[0.0, 0.0, 0.0],
+                mean=[1.0, 1.0, 1.0],
                 std=[1.0, 1.0, 1.0],
                 to_rgb=False),
             dict(type='ExtraAttrs', tag='unsup_teacher'),
@@ -634,6 +636,7 @@ unsup_pipeline = [
 thres = 0.9
 refresh = False
 fp16 = dict(loss_scale='dynamic')
+classes = ('ghost', 'particle')
 fold = 1
 percent = 1
 auto_resume = True

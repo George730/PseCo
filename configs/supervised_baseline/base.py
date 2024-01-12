@@ -17,7 +17,9 @@ model = dict(
     )
 )
 
-img_norm_cfg = dict(mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
+classes = ('ghost', 'particle',)
+# img_norm_cfg = dict(mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
+img_norm_cfg = dict(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0], to_rgb=False)
 
 train_pipeline = [
     dict(type="LoadImageFromFile"),
@@ -27,7 +29,7 @@ train_pipeline = [
         transforms=[
             dict(
                 type="RandResize",
-                img_scale=[(1333, 400), (1333, 1200)],  
+                img_scale=[(1333, 480), (1333, 480)],
                 multiscale_mode="range",
                 keep_ratio=True,
             ),
@@ -74,7 +76,7 @@ test_pipeline = [
     dict(type="LoadImageFromFile"),
     dict(
         type="MultiScaleFlipAug",
-        img_scale=(1333, 800),     
+        img_scale=(1333, 480),     
         flip=False,
         transforms=[
             dict(type="Resize", keep_ratio=True),
@@ -100,10 +102,10 @@ custom_hooks = [
 ]
 
 optimizer = dict(type="SGD", lr=0.01, momentum=0.9, weight_decay=0.0001)
-lr_config = dict(step=[120000, 160000])
-runner = dict(_delete_=True, type="IterBasedRunner", max_iters=180000)
-checkpoint_config = dict(by_epoch=False, interval=10000, max_keep_ckpts=5, create_symlink=False)
-evaluation = dict(interval=10000)
+lr_config = dict(step=[600])
+runner = dict(_delete_=True, type="IterBasedRunner", max_iters=1800)
+checkpoint_config = dict(by_epoch=False, interval=400, max_keep_ckpts=5, create_symlink=False)
+evaluation = dict(interval=450)
 
 # fp16 = dict(loss_scale="dynamic")
 

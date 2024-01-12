@@ -25,6 +25,7 @@ model = dict(
                 gamma=2.0,
                 alpha=0.25,
                 loss_weight=10.0),
+            num_classes=2,
         ),
     ),
     train_cfg=dict(
@@ -36,8 +37,9 @@ model = dict(
     ),
 )
 
+classes = ('ghost', 'particle',)
 # img_norm_cfg = dict(mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
-img_norm_cfg = dict(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0], to_rgb=False)
+img_norm_cfg = dict(mean=[1.0, 1.0, 1.0], std=[1.0, 1.0, 1.0], to_rgb=False)
 
 strong_pipeline = [
     dict(
@@ -45,7 +47,7 @@ strong_pipeline = [
         transforms=[
             dict(
                 type="RandResize",
-                img_scale=[(1333, 200), (1333, 200)],   
+                img_scale=[(1333, 480), (1333, 480)],   
                 multiscale_mode="range",
                 keep_ratio=True,
             ),
@@ -119,7 +121,7 @@ weak_pipeline = [
         transforms=[
         dict(
             type="RandResize",
-            img_scale=[(1333, 200), (1333, 200)],    
+            img_scale=[(1333, 480), (1333, 480)],    
             multiscale_mode="range",
             keep_ratio=True,
         ),
@@ -152,6 +154,7 @@ unsup_pipeline = [
     dict(type="LoadImageFromFile", file_client_args=dict(backend="${backend}")),
     # dict(type="LoadAnnotations", with_bbox=True),
     # generate fake labels for data format compatibility
+    # dict(type='Grayscale'),
     dict(type="PseudoSamples", with_bbox=True),
     dict(
         type="MultiBranch", unsup_student=strong_pipeline, unsup_teacher=weak_pipeline
@@ -164,13 +167,19 @@ data = dict(
     train=dict(
         sup=dict(
             type="CocoDataset",
+            classes=classes,
             ann_file="/home/ubuntu/PseCo/data/sup_coco_data.json",
             img_prefix="/home/ubuntu/PseCo/data/data/",
+            # ann_file="/home/ubuntu/PseCo/data/coco/annotations/semi_supervised/instances_train2017.6@1.json",
+            # img_prefix="/home/ubuntu/PseCo/data/coco/images/val2017",
         ),
         unsup=dict(
             type="CocoDataset",
+            classes=classes,
             ann_file="/home/ubuntu/PseCo/data/coco_data.json",
             img_prefix="/home/ubuntu/PseCo/data/data/",
+            # ann_file="/home/ubuntu/PseCo/data/coco/annotations/semi_supervised/instances_train2017.6@1-unlabeled.json",
+            # img_prefix="/home/ubuntu/PseCo/data/coco/images/val2017",
             pipeline=unsup_pipeline,
         ),
     ),

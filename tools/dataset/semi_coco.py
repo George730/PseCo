@@ -67,7 +67,7 @@ def prepare_coco_data(seed=1, percent=10.0, version=2017, seed_offset=0):
     COCOANNODIR = os.path.join(DATA_DIR, "annotations")
 
     anno = json.load(
-        open(os.path.join(COCOANNODIR, "instances_train{}.json".format(version)))
+        open(os.path.join(COCOANNODIR, "instances_val{}.json".format(version)))
     )
 
     image_list = anno["images"]

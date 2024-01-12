@@ -9,11 +9,11 @@ PERCENT=1
 
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH
 
-export unsup_start_iter=0
-export unsup_warmup_iter=0
+export unsup_start_iter=100
+export unsup_warmup_iter=50
 
 python $(dirname "$0")/train.py $CONFIG --work-dir $work_dir  \
     --cfg-options fold=${FOLD} \
                   percent=${PERCENT} \
-                  runner.max_iters=9000 \
-                  lr_config.step=\[6000\] \
+                  runner.max_iters=1800 \
+                  lr_config.step=\[600\] \
